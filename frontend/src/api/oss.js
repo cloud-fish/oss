@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const api = axios.create({
   baseURL: '/api/oss',
-  timeout: 30000,
+  timeout: 300000, // 5分钟，Agent调用Ollama模型需要较长时间
 })
 
 export function diagnoseFault(alarmContent) {
