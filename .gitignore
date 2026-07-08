@@ -1,5 +1,9 @@
-# Build output
-target/
+# Backend build output
+backend/target/
+
+# Frontend build output
+frontend/dist/
+frontend/node_modules/
 
 # IDE
 .idea/
@@ -14,6 +18,10 @@ Thumbs.db
 *.log
 
 # Maven
-.mvn/
-mvnw
-mvnw.cmd
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+
+# Node
+frontend/.npm
+frontend/.yarn
