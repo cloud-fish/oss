@@ -16,33 +16,57 @@
 
 ```
 study_agentscope/
-├── pom.xml                                         # Maven 配置
-├── src/main/java/com/example/agentscope/
-│   ├── AgentScopeApplication.java                  # Spring Boot 启动类
-│   ├── controller/
-│   │   └── OssAgentController.java                 # OSS 业务接口
-│   ├── service/
-│   │   ├── OssAgentService.java                    # OSS 服务接口
-│   │   └── impl/
-│   │       └── OssAgentServiceImpl.java            # OSS 服务实现
-│   ├── dto/
-│   │   ├── AgentRequest.java / AgentResponse.java  # 通用 DTO
-│   │   ├── AlarmInfo.java                          # 告警信息
-│   │   ├── FaultDiagnosisResult.java               # 故障诊断结果
-│   │   ├── PerformanceMetric.java                  # 性能指标
-│   │   ├── DeviceInfo.java                         # 设备信息
-│   │   └── WorkOrder.java                          # 工单信息
-│   ├── tool/
-│   │   ├── FaultDiagnosisTools.java                # 故障诊断工具
-│   │   ├── NetworkMonitorTools.java                # 网络监控工具
-│   │   ├── ResourceManageTools.java                # 资源管理工具
-│   │   └── WorkOrderTools.java                     # 工单管理工具
-│   └── config/
-│       ├── OllamaProperties.java                   # Ollama 配置
-│       ├── OllamaConfig.java                       # 模型配置
-│       └── AgentProperties.java                    # Agent 配置
-└── src/main/resources/
-    └── application.yml                             # 应用配置
+├── backend/                                        # 后端项目 (Spring Boot)
+│   ├── pom.xml                                     # Maven 配置
+│   ├── src/main/java/com/example/agentscope/
+│   │   ├── AgentScopeApplication.java              # Spring Boot 启动类
+│   │   ├── controller/
+│   │   │   └── OssAgentController.java             # OSS 业务接口
+│   │   ├── service/
+│   │   │   ├── OssAgentService.java                # OSS 服务接口
+│   │   │   └── impl/
+│   │   │       └── OssAgentServiceImpl.java        # OSS 服务实现
+│   │   ├── dto/
+│   │   │   ├── AgentRequest.java / AgentResponse.java  # 通用 DTO
+│   │   │   ├── AlarmInfo.java                          # 告警信息
+│   │   │   ├── FaultDiagnosisResult.java               # 故障诊断结果
+│   │   │   ├── PerformanceMetric.java                  # 性能指标
+│   │   │   ├── DeviceInfo.java                         # 设备信息
+│   │   │   └── WorkOrder.java                          # 工单信息
+│   │   ├── tool/
+│   │   │   ├── FaultDiagnosisTools.java                # 故障诊断工具
+│   │   │   ├── NetworkMonitorTools.java                # 网络监控工具
+│   │   │   ├── ResourceManageTools.java                # 资源管理工具
+│   │   │   └── WorkOrderTools.java                     # 工单管理工具
+│   │   └── config/
+│   │       ├── OllamaProperties.java                   # Ollama 配置
+│   │       ├── OllamaConfig.java                       # 模型配置
+│   │       └── AgentProperties.java                    # Agent 配置
+│   └── src/main/resources/
+│       └── application.yml                             # 应用配置
+│
+└── frontend/                                       # 前端项目 (Vue3 + Tailwind)
+    ├── package.json                                # Node.js 依赖配置
+    ├── vite.config.js                              # Vite 构建配置
+    ├── tailwind.config.js                          # Tailwind CSS 配置
+    ├── index.html                                  # 入口 HTML
+    └── src/
+        ├── main.js                                 # Vue 应用入口
+        ├── App.vue                                 # 根组件
+        ├── style.css                               # 全局样式
+        ├── router/
+        │   └── index.js                            # Vue Router 路由配置
+        ├── stores/
+        │   └── ossStore.js                         # Pinia 状态管理
+        ├── api/
+        │   └── oss.js                              # API 接口封装
+        └── views/
+            ├── Home.vue                            # 首页
+            ├── FaultDiagnosis.vue                  # 故障诊断页面
+            ├── NetworkMonitor.vue                  # 网络监控页面
+            ├── ResourceManage.vue                  # 资源管理页面
+            ├── WorkOrder.vue                       # 工单管理页面
+            └── Collaborate.vue                     # 协同处理页面
 ```
 
 ## Spring 分层架构
@@ -129,13 +153,22 @@ POST /api/oss/collaborate
 
 ## 前置要求
 
+**后端：**
 - JDK 17+
 - Maven 3.8+
 - Ollama 本地模型服务
 
+**前端：**
+- Node.js 18+
+- npm 或 yarn
+
 ## 快速开始
 
+### 1. 启动后端服务
+
 ```bash
+cd backend
+
 # 编译
 mvn clean compile
 
@@ -144,6 +177,22 @@ mvn spring-boot:run
 
 # 或在 IDEA 中运行 AgentScopeApplication.java
 ```
+
+后端服务启动在 `http://localhost:8080`
+
+### 2. 启动前端服务
+
+```bash
+cd frontend
+
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+```
+
+前端服务启动在 `http://localhost:3000`，会自动代理 API 请求到后端
 
 ## 测试
 
