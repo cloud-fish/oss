@@ -1,0 +1,256 @@
+================================================================================
+OSS AgentScope - 运营商智能运维系统 - 项目说明
+================================================================================
+
+【项目概述】
+本项目基于 Spring Boot + AgentScope Java 框架构建，将运营商 OSS（运营支撑系统）
+业务场景与 AI 智能体技术结合，演示 ReAct 智能体和多智能体协同在运营商网络运维中的应用。
+
+================================================================================
+【运营商 OSS 业务背景】
+================================================================================
+
+OSS（Operations Support System）是运营商的核心系统，负责网络的运营和管理。
+本项目覆盖以下 OSS 核心模块：
+
+1. 故障管理 - 告警采集、故障定位、工单派发、故障闭环
+2. 性能管理 - 性能指标采集、网络质量分析、趋势预测
+3. 资源管理 - 设备管理、端口管理、资源分配、资源统计
+
+================================================================================
+【项目结构】
+================================================================================
+
+study_agentscope/
+├── pom.xml                                         # Maven 配置文件
+├── README.md                                       # 详细文档
+├── src/main/java/com/example/agentscope/
+│   ├── AgentScopeApplication.java                  # Spring Boot 启动类
+│   ├── controller/
+│   │   └── OssAgentController.java                 # OSS 业务接口
+│   ├── service/
+│   │   ├── OssAgentService.java                    # OSS 服务接口
+│   │   └── impl/
+│   │       └── OssAgentServiceImpl.java            # OSS 服务实现
+│   ├── dto/
+│   │   ├── AgentRequest.java                       # 通用请求 DTO
+│   │   ├── AgentResponse.java                      # 通用响应 DTO
+│   │   ├── AlarmInfo.java                          # 告警信息
+│   │   ├── FaultDiagnosisResult.java               # 故障诊断结果
+│   │   ├── PerformanceMetric.java                  # 网络性能指标
+│   │   ├── DeviceInfo.java                         # 网络设备信息
+│   │   └── WorkOrder.java                          # 工单信息
+│   ├── tool/
+│   │   ├── FaultDiagnosisTools.java                # 故障诊断工具
+│   │   ├── NetworkMonitorTools.java                # 网络监控工具
+│   │   ├── ResourceManageTools.java                # 资源管理工具
+│   │   └── WorkOrderTools.java                     # 工单管理工具
+│   └── config/
+│       ├── OllamaProperties.java                   # Ollama 配置属性
+│       ├── OllamaConfig.java                       # Ollama 模型配置
+│       └── AgentProperties.java                    # Agent 配置属性
+└── src/main/resources/
+    └── application.yml                             # 应用配置文件
+
+================================================================================
+【Spring 分层架构说明】
+================================================================================
+
+本项目采用标准的 Spring Boot 分层架构：
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  Controller 层（接口层）                                                     │
+│  - OssAgentController.java：接收 HTTP 请求，调用 Service                      │
+│  - 使用 @RestController + @RequestMapping 注解                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Service 层（业务逻辑层）                                                     │
+│  - OssAgentService.java：接口定义（面向接口编程）                               │
+│  - OssAgentServiceImpl.java：实现类（具体业务逻辑）                             │
+│  - 使用 @Service 注解注册到 Spring 容器                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Tool 层（Agent 工具层）                                                      │
+│  - FaultDiagnosisTools.java：故障诊断工具（查询告警、分析日志、诊断根因）         │
+│  - NetworkMonitorTools.java：网络监控工具（查询性能指标、分析网络质量）           │
+│  - ResourceManageTools.java：资源管理工具（查询设备、分配端口、统计资源）         │
+│  - WorkOrderTools.java：工单管理工具（创建工单、派发工单、查询工单）              │
+│  - 使用 @Tool + @ToolParam 注解定义 Agent 可调用的工具                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  DTO 层（数据传输对象）                                                       │
+│  - AlarmInfo.java：告警信息（告警ID、级别、设备、内容、状态）                    │
+│  - FaultDiagnosisResult.java：故障诊断结果（根因、方案、影响范围）               │
+│  - PerformanceMetric.java：性能指标（带宽、时延、丢包率、可用率）                │
+│  - DeviceInfo.java：设备信息（设备类型、IP、位置、端口统计）                     │
+│  - WorkOrder.java：工单信息（工单类型、优先级、状态、处理人）                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+【OSS 业务 API 接口】
+================================================================================
+
+1. 故障诊断接口
+   POST /api/oss/fault/diagnose
+   请求: {"alarmContent": "OLT-SH-01 上行链路中断"}
+   功能: 分析告警信息，查询设备日志，诊断故障根因，提供处理建议
+
+2. 网络监控接口
+   POST /api/oss/monitor/query
+   请求: {"query": "上海区域网络质量如何？"}
+   功能: 查询设备性能指标，分析网络质量，生成质量报告
+
+3. 资源管理接口
+   POST /api/oss/resource/query
+   请求: {"query": "OLT-SH-01有哪些可用端口？"}
+   功能: 查询设备信息，查询端口状态，分配网络资源
+
+4. 工单管理接口
+   POST /api/oss/workorder/create
+   请求: {"orderRequest": "创建故障工单，OLT上行链路中断，优先级P1"}
+   功能: 创建工单，派发工单，查询工单状态
+
+5. 故障协同处理接口
+   POST /api/oss/collaborate
+   请求: {"issue": "OLT-SH-01 上行链路中断，影响1200户宽带用户"}
+   功能: 多Agent协同 - 监控发现问题 → 诊断定位根因 → 创建故障工单
+
+================================================================================
+【多 Agent 协同流程 - 故障协同处理】
+================================================================================
+
+用户输入故障描述
+       ↓
+┌──────────────────────────────────────────────┐
+│  步骤1: 网络监控 Agent                         │
+│  - 查询设备性能指标                             │
+│  - 分析网络质量                                │
+│  - 检查链路状态                                │
+└──────────────────────────────────────────────┘
+       ↓
+┌──────────────────────────────────────────────┐
+│  步骤2: 故障诊断 Agent                         │
+│  - 分析告警信息                                │
+│  - 查询设备日志                                │
+│  - 诊断故障根因                                │
+│  - 提供处理建议                                │
+└──────────────────────────────────────────────┘
+       ↓
+┌──────────────────────────────────────────────┐
+│  步骤3: 工单管理 Agent                         │
+│  - 创建故障工单                                │
+│  - 派发工单给处理人员                           │
+│  - 更新工单状态                                │
+└──────────────────────────────────────────────┘
+       ↓
+输出完整的故障协同处理报告
+
+================================================================================
+【前置要求】
+================================================================================
+
+1. JDK 17+ (推荐 JDK 21)
+2. Maven 3.8+
+3. Ollama 本地模型服务已运行
+
+【安装 Maven】
+方法1: 使用 IntelliJ IDEA (推荐)
+- IDEA 已内置 Maven，可直接在 IDEA 中打开项目
+- 右键 pom.xml → Maven → Reload Project
+
+方法2: 手动安装 Maven
+1. 下载 Maven: https://maven.apache.org/download.cgi
+2. 解压到 C:\Program Files\Apache\maven
+3. 添加环境变量:
+   - MAVEN_HOME = C:\Program Files\Apache\maven
+   - Path 中添加: %MAVEN_HOME%\bin
+4. 验证安装: mvn -version
+
+================================================================================
+【编译和运行】
+================================================================================
+
+编译项目:
+cd d:\study_agentscope
+mvn clean compile
+
+启动 Spring Boot 应用:
+mvn spring-boot:run
+
+或在 IDEA 中运行 AgentScopeApplication.java 的 main 方法
+
+================================================================================
+【测试接口】
+================================================================================
+
+# 故障诊断
+curl -X POST http://localhost:8080/api/oss/fault/diagnose ^
+  -H "Content-Type: application/json" ^
+  -d "{\"alarmContent\": \"OLT-SH-01 上行链路中断\"}"
+
+# 网络监控
+curl -X POST http://localhost:8080/api/oss/monitor/query ^
+  -H "Content-Type: application/json" ^
+  -d "{\"query\": \"上海区域网络质量如何？\"}"
+
+# 资源管理
+curl -X POST http://localhost:8080/api/oss/resource/query ^
+  -H "Content-Type: application/json" ^
+  -d "{\"query\": \"OLT-SH-01有哪些可用端口？\"}"
+
+# 工单管理
+curl -X POST http://localhost:8080/api/oss/workorder/create ^
+  -H "Content-Type: application/json" ^
+  -d "{\"orderRequest\": \"创建故障工单，OLT上行链路中断，优先级P1\"}"
+
+# 故障协同处理（多Agent协同）
+curl -X POST http://localhost:8080/api/oss/collaborate ^
+  -H "Content-Type: application/json" ^
+  -d "{\"issue\": \"OLT-SH-01 上行链路中断，影响1200户宽带用户\"}"
+
+================================================================================
+【核心概念】
+================================================================================
+
+1. ReAct 智能体
+   - Reasoning: 思考当前状态
+   - Acting: 调用工具执行
+   - Observation: 观察结果
+   - 循环直到完成任务
+
+2. 多智能体协同
+   - 故障诊断 Agent: 分析告警，定位根因
+   - 网络监控 Agent: 查询性能，分析质量
+   - 资源管理 Agent: 查询设备，分配资源
+   - 工单管理 Agent: 创建工单，派发处理
+
+3. 工具系统
+   使用 @Tool 注解定义工具:
+   @Tool(name = "tool_name", description = "工具描述")
+   public String myTool(@ToolParam(name = "param") String param) {
+       return "结果";
+   }
+
+================================================================================
+【常见问题】
+================================================================================
+
+Q1: Ollama 连接失败
+A1: 确保 Ollama 服务正在运行: ollama serve
+
+Q2: 模型响应慢
+A2: 当前使用 4B 参数模型，可调整 maxIters 或使用更小模型
+
+Q3: 工具调用失败
+A3: 检查工具描述是否清晰，参数类型是否正确
+
+Q4: 端口被占用
+A4: 修改 application.yml 中的 server.port 配置
+
+================================================================================
+【参考资源】
+================================================================================
+
+- AgentScope Java 官方文档: https://java.agentscope.io
+- AgentScope Java GitHub: https://github.com/agentscope-ai/agentscope-java
+- Spring Boot 官方文档: https://spring.io/projects/spring-boot
+- ReAct 论文: https://react-lm.github.io/
+
+================================================================================

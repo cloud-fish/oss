@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+# Ollama 模型配置
+ollama:
+  base-url: http://localhost:11434
+  model-name: "qwen35"
+
+# Agent 配置
+agent:
+  react:
+    max-iterations: 10
+  multi:
+    max-iterations: 8
+
+# Actuator 监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+# OSS智能运维API说明:
+# POST /api/oss/fault/diagnose    - 故障诊断（分析告警，定位根因）
+# POST /api/oss/monitor/query     - 网络监控（查询性能指标，分析网络质量）
+# POST /api/oss/resource/query    - 资源管理（查询设备信息，分配资源）
+# POST /api/oss/workorder/create  - 工单管理（创建/派发/查询工单）
+# POST /api/oss/collaborate       - 故障协同处理（多Agent协同：监控→诊断→工单）
