@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { h, ref } from 'vue'
+import { ref } from 'vue'
 
 const menus = ref([
 '菜单1', '菜单2', '菜单3', '菜单4', '菜单5', '菜单6', '菜单7', '菜单8'
 ])
 
-
 const activeMenu = ref('菜单1')
+
+const emit = defineEmits<{
+  (e: 'logout'): void
+}>()
+
+const handleLogout = () => {
+  emit('logout')
+}
+
 
 </script>
 
@@ -32,7 +40,8 @@ const activeMenu = ref('菜单1')
     <main class="flex-1 flex flex-col">
 
       <header class="h-16 bg-gray-200 flex items-center justify-center">
-      工作区头部
+        <div class="flex items-center justify-center w-full">工作区头部</div>
+        <button class="ml-auto cursor-pointer text-blue-600" @click="handleLogout">退出登录</button>
       </header>
       
       <content class="flex-1 flex flex-col">
